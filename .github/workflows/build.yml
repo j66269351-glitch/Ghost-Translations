@@ -13,13 +13,15 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - uses: android-actions/setup-android@v3
+      - name: Install Android SDK parts
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: '8.7' }
       - run: pip install pillow
       - name: Prepare app from input/
         run: python3 tools/prepare.py
       - name: Build APK
-        run: gradle assembleDebug --no-daemon -PappId=$APP_ID
+        run: gradle assembleDebug --no-daemon --stacktrace -PappId=$APP_ID
       - uses: actions/upload-artifact@v4
         with: { name: app-apk, path: app/build/outputs/apk/debug/app-debug.apk }
       - name: Publish download link
